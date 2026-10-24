@@ -1,0 +1,72 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct Film {
+    string title;
+    string mainActor;
+    int year;
+    string genre;
+};
+
+void inputFilms(Film* ptr, int size) {
+    for (int i = 0; i < size; ++i) {
+        cout << "--- Фільм " << i + 1 << " ---\n";
+        cout << "Назва: ";
+        getline(cin >> ws, (ptr + i)->title);
+        cout << "Виконавець головної ролі: ";
+        getline(cin >> ws, (ptr + i)->mainActor);
+        cout << "Рік випуску: ";
+        cin >> (ptr + i)->year;
+        cout << "Жанр: ";
+        getline(cin >> ws, (ptr + i)->genre);
+    }
+}
+
+void sortFilmsByYear(Film* ptr, int size) {
+    for (int i = 0; i < size - 1; ++i) {
+        for (int j = 0; j < size - i - 1; ++j) {
+            if ((ptr + j)->year > (ptr + j + 1)->year) {
+                Film temp = *(ptr + j);
+                *(ptr + j) = *(ptr + j + 1);
+                *(ptr + j + 1) = temp;
+            }
+        }
+    }
+}
+
+void searchByActor(Film* ptr, int size, const string& targetActor) {
+    bool found = false;
+    cout << "\nФільми, у яких зіграв " << targetActor << ":\n";
+    for (int i = 0; i < size; ++i) {
+        if ((ptr + i)->mainActor == targetActor) {
+            cout << "- " << (ptr + i)->title << " (" << (ptr + i)->year << "), Жанр: " << (ptr + i)->genre << "\n";
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "Фільмів з таким актором не знайдено.\n";
+    }
+}
+
+int main() {
+    system("chcp 65001 > nul");
+    
+    const int SIZE = 10;
+    Film filmsArray[SIZE];
+    Film* filmPtr = filmsArray;
+
+    cout << "Введіть дані про " << SIZE << " фільмів:\n";
+    inputFilms(filmPtr, SIZE);
+
+    sortFilmsByYear(filmPtr, SIZE);
+
+    string searchName;
+    cout << "\nВведіть ім'я та прізвище актора для пошуку: ";
+    getline(cin >> ws, searchName);
+
+    searchByActor(filmPtr, SIZE, searchName);
+
+    return 0;
+}
